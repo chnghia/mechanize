@@ -157,6 +157,7 @@ class Mechanize::HTTP::Agent
     @robots_mutex             = Mutex.new
     @user_agent               = nil
     @webrobots                = nil
+    @internal_log             = {}
 
     # HTTP Authentication
     @auth_store           = Mechanize::HTTP::AuthStore.new
@@ -379,6 +380,10 @@ class Mechanize::HTTP::Agent
     @history.visited_page resolve url
   end
 
+  def internal_log
+    @internal_log
+  end
+
   # :section: Hooks
 
   def hook_content_encoding response, uri, response_body_io
@@ -577,6 +582,18 @@ class Mechanize::HTTP::Agent
 
   # Log specified headers for the request
   def request_log request
+    headers = {}
+    request.each_header do |k, v|
+      headers[k] = v
+    end
+    @internal_log[:request_log] = {
+      status: {
+        'class' => request.class,
+        'path' => request.path
+      },
+      headers: headers
+    }
+
     return unless log
 
     log.info("#{request.class}: #{request.path}")
@@ -890,6 +907,20 @@ class Mechanize::HTTP::Agent
   end
 
   def response_log response
+    headers = {}
+    response.each_header do |k, v|
+      headers[k] = v
+    end
+    @internal_log[:response_log] = {
+      status: {
+        'class' => response.class,
+        'http_version' => response.http_version,
+        'code' => response.code,
+        'message' => response.message
+      },
+      headers: headers
+    }
+
     return unless log
 
     log.info("status: #{response.class} #{response.http_version} " \
