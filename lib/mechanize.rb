@@ -320,6 +320,10 @@ class Mechanize
     @agent.pre_connect_hooks
   end
 
+  def internal_log
+    @agent.internal_log
+  end
+
   # :section: Requests
   #
   # Methods for making HTTP requests
