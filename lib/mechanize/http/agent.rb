@@ -157,7 +157,7 @@ class Mechanize::HTTP::Agent
     @robots_mutex             = Mutex.new
     @user_agent               = nil
     @webrobots                = nil
-    @internal_log             = {}
+    @access_log               = {}
 
     # HTTP Authentication
     @auth_store           = Mechanize::HTTP::AuthStore.new
@@ -380,8 +380,8 @@ class Mechanize::HTTP::Agent
     @history.visited_page resolve url
   end
 
-  def internal_log
-    @internal_log
+  def access_log
+    @access_log
   end
 
   # :section: Hooks
@@ -586,11 +586,9 @@ class Mechanize::HTTP::Agent
     request.each_header do |k, v|
       headers[k] = v
     end
-    @internal_log[:request_log] = {
-      status: {
-        'class' => request.class,
-        'path' => request.path
-      },
+    @access_log[:request_log] = {
+      'class' => request.class.to_s,
+      'path' => request.path,
       headers: headers
     }
 
@@ -911,13 +909,11 @@ class Mechanize::HTTP::Agent
     response.each_header do |k, v|
       headers[k] = v
     end
-    @internal_log[:response_log] = {
-      status: {
-        'class' => response.class,
-        'http_version' => response.http_version,
-        'code' => response.code,
-        'message' => response.message
-      },
+    @access_log[:response_log] = {
+      'class' => response.class,
+      'http_version' => response.http_version,
+      'code' => response.code,
+      'message' => response.message,
       headers: headers
     }
 

@@ -320,8 +320,8 @@ class Mechanize
     @agent.pre_connect_hooks
   end
 
-  def internal_log
-    @agent.internal_log
+  def access_log
+    @agent.access_log
   end
 
   # :section: Requests
