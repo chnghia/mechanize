@@ -910,7 +910,7 @@ class Mechanize::HTTP::Agent
       headers[k] = v
     end
     @access_log[:response_log] = {
-      'class' => response.class,
+      'class' => response.class.to_s,
       'http_version' => response.http_version,
       'code' => response.code,
       'message' => response.message,
